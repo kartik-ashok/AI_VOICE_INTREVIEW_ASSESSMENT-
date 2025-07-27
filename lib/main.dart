@@ -6,6 +6,7 @@ import 'package:ai_voice_intreview/screens/pages/subject_selection_page.dart';
 import 'package:ai_voice_intreview/screens/auth/admin_dashboard.dart';
 import 'package:ai_voice_intreview/screens/auth/signup_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,21 +21,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AI Voice Interview',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-        fontFamily: 'Roboto',
+    return Sizer(
+      builder: (context, orientation, deviceType) => MaterialApp(
+        title: 'AI Voice Interview',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          fontFamily: 'Roboto',
+        ),
+        home: const AuthWrapper(),
+        routes: {
+          '/login': (context) => const LoginScreen(),
+          '/signup': (context) => const SignupScreen(),
+          '/admin': (context) => const AdminDashboard(),
+          '/home': (context) => const SubjectSelectionPage(),
+        },
+        debugShowCheckedModeBanner: false,
       ),
-      home: const AuthWrapper(),
-      routes: {
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScreen(),
-        '/admin': (context) => const AdminDashboard(),
-        '/home': (context) => const SubjectSelectionPage(),
-      },
-      debugShowCheckedModeBanner: false,
     );
   }
 }

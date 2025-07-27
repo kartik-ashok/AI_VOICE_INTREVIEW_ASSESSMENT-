@@ -1,3 +1,4 @@
+import 'package:ai_voice_intreview/responsiveness.dart';
 import 'package:flutter/material.dart';
 import '../../services/firebase_service.dart';
 import 'login_screen.dart';
@@ -168,6 +169,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // fixes overflow when keyboard opens
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
         backgroundColor: Colors.blue,
@@ -189,248 +191,250 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(ResponsiveSize.width(20)),
             child: Column(
               children: [
                 // Header
                 Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius:
+                        BorderRadius.circular(ResponsiveSize.width(15)),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(ResponsiveSize.width(20)),
                     child: Column(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.admin_panel_settings,
-                          size: 50,
+                          size: ResponsiveSize.width(50),
                           color: Colors.blue,
                         ),
-                        const SizedBox(height: 10),
+                        SizedBox(height: ResponsiveSize.height(10)),
                         Text(
                           'Welcome, ${FirebaseService.currentUser?.email ?? 'Admin'}',
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: ResponsiveSize.font(18),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        const Text(
+                        SizedBox(height: ResponsiveSize.height(5)),
+                        Text(
                           'Add questions to the database',
                           style: TextStyle(
                             color: Colors.grey,
+                            fontSize: ResponsiveSize.font(14),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 20),
+                SizedBox(height: ResponsiveSize.height(20)),
 
                 // Question Form
-                Expanded(
-                  child: Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Add Questions',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(ResponsiveSize.width(15)),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(ResponsiveSize.width(20)),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Add Questions',
+                            style: TextStyle(
+                              fontSize: ResponsiveSize.font(20),
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                          SizedBox(height: ResponsiveSize.height(20)),
 
-                            const SizedBox(height: 20),
+                          // Subject Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _selectedSubject,
+                            decoration: InputDecoration(
+                              labelText: 'Subject',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                    ResponsiveSize.width(12)),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[50],
+                            ),
+                            items: _subjects.map((String subject) {
+                              return DropdownMenuItem<String>(
+                                value: subject,
+                                child: Text(subject),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedSubject = newValue!;
+                                _updateTopics();
+                              });
+                            },
+                          ),
+                          SizedBox(height: ResponsiveSize.height(15)),
 
-                            // Subject Dropdown
-                            DropdownButtonFormField<String>(
-                              value: _selectedSubject,
-                              decoration: InputDecoration(
-                                labelText: 'Subject',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                          // Topic Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _selectedTopic,
+                            decoration: InputDecoration(
+                              labelText: 'Topic',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                    ResponsiveSize.width(12)),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[50],
+                            ),
+                            items: _topicsBySubject[_selectedSubject]!
+                                .map((String topic) {
+                              return DropdownMenuItem<String>(
+                                value: topic,
+                                child: Text(topic),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedTopic = newValue!;
+                              });
+                            },
+                          ),
+                          SizedBox(height: ResponsiveSize.height(15)),
+
+                          // Question Input + Add Button
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _questionController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Question',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          ResponsiveSize.width(12)),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.grey[50],
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Please enter a question';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                filled: true,
-                                fillColor: Colors.grey[50],
                               ),
-                              items: _subjects.map((String subject) {
-                                return DropdownMenuItem<String>(
-                                  value: subject,
-                                  child: Text(subject),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedSubject = newValue!;
-                                  _updateTopics();
-                                });
-                              },
-                            ),
-
-                            const SizedBox(height: 15),
-
-                            // Topic Dropdown
-                            DropdownButtonFormField<String>(
-                              value: _selectedTopic,
-                              decoration: InputDecoration(
-                                labelText: 'Topic',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                              SizedBox(width: ResponsiveSize.width(10)),
+                              ElevatedButton(
+                                onPressed: _addQuestion,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        ResponsiveSize.width(12)),
+                                  ),
                                 ),
-                                filled: true,
-                                fillColor: Colors.grey[50],
+                                child: Icon(Icons.add,
+                                    size: ResponsiveSize.width(20)),
                               ),
-                              items: _topicsBySubject[_selectedSubject]!
-                                  .map((String topic) {
-                                return DropdownMenuItem<String>(
-                                  value: topic,
-                                  child: Text(topic),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedTopic = newValue!;
-                                });
-                              },
-                            ),
+                            ],
+                          ),
+                          SizedBox(height: ResponsiveSize.height(20)),
 
-                            const SizedBox(height: 15),
-
-                            // Question Input
-                            Row(
+                          // Questions List
+                          if (_questions.isEmpty)
+                            Center(
+                              child: Text(
+                                'No questions added yet',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: ResponsiveSize.font(14),
+                                ),
+                              ),
+                            )
+                          else
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _questionController,
-                                    decoration: InputDecoration(
-                                      labelText: 'Question',
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.grey[50],
-                                    ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.trim().isEmpty) {
-                                        return 'Please enter a question';
-                                      }
-                                      return null;
-                                    },
+                                Text(
+                                  'Questions (${_questions.length})',
+                                  style: TextStyle(
+                                    fontSize: ResponsiveSize.font(16),
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                ElevatedButton(
-                                  onPressed: _addQuestion,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  child: const Icon(Icons.add),
+                                SizedBox(height: ResponsiveSize.height(10)),
+                                ListView.builder(
+                                  itemCount: _questions.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      margin: EdgeInsets.only(
+                                          bottom: ResponsiveSize.height(8)),
+                                      child: ListTile(
+                                        title: Text(
+                                          _questions[index],
+                                          style: TextStyle(
+                                              fontSize:
+                                                  ResponsiveSize.font(14)),
+                                        ),
+                                        trailing: IconButton(
+                                          icon: Icon(Icons.delete,
+                                              color: Colors.red,
+                                              size: ResponsiveSize.width(20)),
+                                          onPressed: () =>
+                                              _removeQuestion(index),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
 
-                            const SizedBox(height: 20),
+                          SizedBox(height: ResponsiveSize.height(20)),
 
-                            // Questions List
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Questions (${_questions.length})',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Expanded(
-                                    child: _questions.isEmpty
-                                        ? const Center(
-                                            child: Text(
-                                              'No questions added yet',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontStyle: FontStyle.italic,
-                                              ),
-                                            ),
-                                          )
-                                        : ListView.builder(
-                                            itemCount: _questions.length,
-                                            itemBuilder: (context, index) {
-                                              return Card(
-                                                margin: const EdgeInsets.only(
-                                                    bottom: 8),
-                                                child: ListTile(
-                                                  title: Text(
-                                                    _questions[index],
-                                                    style: const TextStyle(
-                                                        fontSize: 14),
-                                                  ),
-                                                  trailing: IconButton(
-                                                    icon: const Icon(
-                                                        Icons.delete,
-                                                        color: Colors.red),
-                                                    onPressed: () =>
-                                                        _removeQuestion(index),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Save Button
-                            SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: _isLoading || _questions.isEmpty
-                                    ? null
-                                    : _saveQuestions,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                          // Save Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: ResponsiveSize.height(50),
+                            child: ElevatedButton(
+                              onPressed: _isLoading || _questions.isEmpty
+                                  ? null
+                                  : _saveQuestions,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      ResponsiveSize.width(12)),
                                 ),
-                                child: _isLoading
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white)
-                                    : const Text(
-                                        'Save Questions',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
                               ),
+                              child: _isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white)
+                                  : Text(
+                                      'Save Questions',
+                                      style: TextStyle(
+                                        fontSize: ResponsiveSize.font(16),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

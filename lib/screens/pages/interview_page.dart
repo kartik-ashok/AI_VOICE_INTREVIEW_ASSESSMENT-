@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:ai_voice_intreview/responsiveness.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -381,16 +382,16 @@ class _InterviewPageState extends State<InterviewPage>
         return Transform.scale(
           scale: _avatarScaleAnimation.value,
           child: Container(
-            width: 120,
-            height: 120,
+            width: ResponsiveSize.width(120),
+            height: ResponsiveSize.height(120),
             decoration: BoxDecoration(
               color: Colors.white,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
                   color: Colors.blue.withOpacity(0.3),
-                  blurRadius: 20,
-                  spreadRadius: 5,
+                  blurRadius: ResponsiveSize.width(20),
+                  spreadRadius: ResponsiveSize.width(5),
                 ),
               ],
             ),
@@ -399,8 +400,8 @@ class _InterviewPageState extends State<InterviewPage>
               children: [
                 // Face
                 Container(
-                  width: 100,
-                  height: 100,
+                  width: ResponsiveSize.width(100),
+                  height: ResponsiveSize.height(100),
                   decoration: BoxDecoration(
                     color: Colors.blue[100],
                     shape: BoxShape.circle,
@@ -408,11 +409,11 @@ class _InterviewPageState extends State<InterviewPage>
                 ),
                 // Eyes
                 Positioned(
-                  top: 30,
-                  left: 25,
+                  top: ResponsiveSize.height(30),
+                  left: ResponsiveSize.width(25),
                   child: Container(
-                    width: 8,
-                    height: 8,
+                    width: ResponsiveSize.width(8),
+                    height: ResponsiveSize.height(8),
                     decoration: const BoxDecoration(
                       color: Colors.black,
                       shape: BoxShape.circle,
@@ -420,11 +421,11 @@ class _InterviewPageState extends State<InterviewPage>
                   ),
                 ),
                 Positioned(
-                  top: 30,
-                  right: 25,
+                  top: ResponsiveSize.height(30),
+                  right: ResponsiveSize.width(25),
                   child: Container(
-                    width: 8,
-                    height: 8,
+                    width: ResponsiveSize.width(8),
+                    height: ResponsiveSize.height(8),
                     decoration: const BoxDecoration(
                       color: Colors.black,
                       shape: BoxShape.circle,
@@ -433,18 +434,19 @@ class _InterviewPageState extends State<InterviewPage>
                 ),
                 // Animated mouth
                 Positioned(
-                  bottom: 25,
+                  bottom: ResponsiveSize.height(25),
                   child: AnimatedBuilder(
                     animation: _mouthScaleAnimation,
                     builder: (context, child) {
                       return Transform.scale(
                         scale: _mouthScaleAnimation.value,
                         child: Container(
-                          width: 20,
-                          height: 12,
+                          width: ResponsiveSize.width(20),
+                          height: ResponsiveSize.height(12),
                           decoration: BoxDecoration(
                             color: Colors.black,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius:
+                                BorderRadius.circular(ResponsiveSize.width(10)),
                           ),
                         ),
                       );
@@ -455,16 +457,16 @@ class _InterviewPageState extends State<InterviewPage>
                 if (_isListening)
                   ...List.generate(3, (index) {
                     return Positioned(
-                      right: -20 - (index * 15),
-                      top: 40 + (index * 10),
+                      right: ResponsiveSize.width(-20 - (index * 15)),
+                      top: ResponsiveSize.height(40 + (index * 10)),
                       child: AnimatedBuilder(
                         animation: _pulseAnimation,
                         builder: (context, child) {
                           return Transform.scale(
                             scale: _pulseAnimation.value * (1 - index * 0.2),
                             child: Container(
-                              width: 8,
-                              height: 8,
+                              width: ResponsiveSize.width(8),
+                              height: ResponsiveSize.height(8),
                               decoration: BoxDecoration(
                                 color: Colors.blue.withOpacity(0.6),
                                 shape: BoxShape.circle,
@@ -507,19 +509,19 @@ class _InterviewPageState extends State<InterviewPage>
               colors: [Colors.blue, Colors.red],
             ),
           ),
-          child: const Center(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator(
+                const CircularProgressIndicator(
                   color: Colors.white,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: ResponsiveSize.height(20)),
                 Text(
                   'Loading questions...',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: ResponsiveSize.font(18),
                   ),
                 ),
               ],
@@ -537,16 +539,19 @@ class _InterviewPageState extends State<InterviewPage>
         elevation: 0,
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            margin: EdgeInsets.only(right: ResponsiveSize.width(16)),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveSize.width(12),
+              vertical: ResponsiveSize.height(6),
+            ),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(ResponsiveSize.width(20)),
             ),
             child: Text(
               _formatTime(_timeElapsed),
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: ResponsiveSize.font(16),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -566,7 +571,7 @@ class _InterviewPageState extends State<InterviewPage>
             children: [
               // Progress indicator
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(ResponsiveSize.width(20)),
                 child: Column(
                   children: [
                     Row(
@@ -574,21 +579,21 @@ class _InterviewPageState extends State<InterviewPage>
                       children: [
                         Text(
                           'Question ${_currentQuestionIndex + 1} of ${_questions.length}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: ResponsiveSize.font(16),
                           ),
                         ),
                         Text(
                           'Confidence: ${(_confidence * 100).toStringAsFixed(1)}%',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: ResponsiveSize.font(16),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: ResponsiveSize.height(10)),
                     LinearProgressIndicator(
                       value: _questions.isNotEmpty
                           ? (_currentQuestionIndex + 1) / _questions.length
@@ -604,23 +609,25 @@ class _InterviewPageState extends State<InterviewPage>
               // Animated Avatar (when listening)
               if (_isListening)
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
+                  margin:
+                      EdgeInsets.symmetric(vertical: ResponsiveSize.height(20)),
                   child: _buildAnimatedAvatar(),
                 ),
 
               // Question display
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(30),
+                  margin: EdgeInsets.all(ResponsiveSize.width(20)),
+                  padding: EdgeInsets.all(ResponsiveSize.width(30)),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius:
+                        BorderRadius.circular(ResponsiveSize.width(20)),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        spreadRadius: 2,
+                        blurRadius: ResponsiveSize.width(10),
+                        spreadRadius: ResponsiveSize.width(2),
                       ),
                     ],
                   ),
@@ -630,20 +637,21 @@ class _InterviewPageState extends State<InterviewPage>
                       Text(
                         'Question ${_currentQuestionIndex + 1}',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: ResponsiveSize.font(18),
                           color: Colors.grey[600],
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: ResponsiveSize.height(20)),
+
                       Expanded(
                         child: Center(
                           child: Text(
                             currentQuestion.isNotEmpty
                                 ? currentQuestion
                                 : 'Loading question...',
-                            style: const TextStyle(
-                              fontSize: 24,
+                            style: TextStyle(
+                              fontSize: ResponsiveSize.font(24),
                               fontWeight: FontWeight.bold,
                               height: 1.4,
                             ),
@@ -658,33 +666,33 @@ class _InterviewPageState extends State<InterviewPage>
                         children: [
                           if (_isSpeaking)
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: ResponsiveSize.width(12),
+                                vertical: ResponsiveSize.height(6),
                               ),
                               decoration: BoxDecoration(
-                                // color: Colors.blue,
-                                gradient: LinearGradient(
+                                gradient: const LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [Colors.blue, Colors.red],
                                 ),
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(
+                                    ResponsiveSize.width(15)),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     Icons.volume_up,
                                     color: Colors.white,
-                                    size: 16,
+                                    size: ResponsiveSize.width(16),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: ResponsiveSize.width(5)),
                                   Text(
                                     'Reading Question',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: ResponsiveSize.font(12),
                                     ),
                                   ),
                                 ],
@@ -692,60 +700,65 @@ class _InterviewPageState extends State<InterviewPage>
                             ),
                           if (_isWaitingForAnswer && !_isSpeaking)
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: ResponsiveSize.width(12),
+                                vertical: ResponsiveSize.height(6),
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.green,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(
+                                    ResponsiveSize.width(15)),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     Icons.mic,
                                     color: Colors.white,
-                                    size: 16,
+                                    size: ResponsiveSize.width(16),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: ResponsiveSize.width(5)),
                                   Text(
                                     'Ready to Listen',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: ResponsiveSize.font(12),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          SizedBox(
-                            width: 6,
-                          ),
+                          SizedBox(width: ResponsiveSize.width(6)),
                           if (_isListening)
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: ResponsiveSize.width(12),
+                                vertical: ResponsiveSize.height(6),
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.red,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(
+                                    ResponsiveSize.width(15)),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     Icons.record_voice_over,
                                     color: Colors.white,
-                                    size: 16,
+                                    size: ResponsiveSize.width(16),
                                   ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    'Listening (1 min max)',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
+                                  SizedBox(width: ResponsiveSize.width(2)),
+                                  Flexible(
+                                    // 👈 This allows the text to wrap instead of overflowing
+                                    child: Text(
+                                      'Listening',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: ResponsiveSize.font(12),
+                                          overflow: TextOverflow.ellipsis),
+                                      overflow: TextOverflow
+                                          .ellipsis, // 👈 optional, trims if no space
                                     ),
                                   ),
                                 ],
@@ -753,34 +766,73 @@ class _InterviewPageState extends State<InterviewPage>
                             ),
                           if (_isRestarting)
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: ResponsiveSize.width(12),
+                                vertical: ResponsiveSize.height(6),
                               ),
                               decoration: BoxDecoration(
                                 color: Colors.orange,
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(
+                                    ResponsiveSize.width(15)),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
                                     Icons.refresh,
                                     color: Colors.white,
-                                    size: 16,
+                                    size: ResponsiveSize.width(16),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: ResponsiveSize.width(10)),
                                   Text(
                                     'Restarting...',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: ResponsiveSize.font(12),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                         ],
+                      ),
+                      SizedBox(
+                        height: ResponsiveSize.height(10),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          // Call the next question method to skip the current question
+                          _nextQuestion();
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: ResponsiveSize.width(12),
+                            vertical: ResponsiveSize.height(6),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            borderRadius:
+                                BorderRadius.circular(ResponsiveSize.width(15)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                color: Colors.white,
+                                size: ResponsiveSize.width(16),
+                              ),
+                              SizedBox(width: ResponsiveSize.width(10)),
+                              Text(
+                                'Skip Question',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: ResponsiveSize.font(12),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -790,28 +842,31 @@ class _InterviewPageState extends State<InterviewPage>
               // Answer display
               if (_currentText.isNotEmpty && _currentText != 'Listening...')
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(20),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: ResponsiveSize.width(20),
+                  ),
+                  padding: EdgeInsets.all(ResponsiveSize.width(20)),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius:
+                        BorderRadius.circular(ResponsiveSize.width(15)),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Your Answer:',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: ResponsiveSize.font(16),
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: ResponsiveSize.height(10)),
                       Text(
                         _currentText,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: ResponsiveSize.font(16),
                           color: Colors.black87,
                         ),
                       ),
@@ -821,7 +876,7 @@ class _InterviewPageState extends State<InterviewPage>
 
               // Control buttons
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(ResponsiveSize.width(20)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -844,30 +899,86 @@ class _InterviewPageState extends State<InterviewPage>
                     // Next question button
                     if (_currentText.isNotEmpty &&
                         _currentText != 'Listening...')
-                      ElevatedButton(
-                        onPressed: _nextQuestion,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 15,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
+                      Container(
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: _nextQuestion,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.blue,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: ResponsiveSize.width(30),
+                                  vertical: ResponsiveSize.height(15),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      ResponsiveSize.width(25)),
+                                ),
+                              ),
+                              child: Text(
+                                'Next Question',
+                                style: TextStyle(
+                                  fontSize: ResponsiveSize.font(16),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: const Text(
-                          'Next Question',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      )
                   ],
                 ),
               ),
+              // Padding(
+              //   padding: EdgeInsets.all(ResponsiveSize.width(20)),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     children: [
+              //       // Manual mic button
+              //       FloatingActionButton(
+              //         onPressed: _isWaitingForAnswer ? _startListening : null,
+              //         backgroundColor:
+              //             _isWaitingForAnswer ? Colors.green : Colors.grey,
+              //         child: const Icon(Icons.mic),
+              //       ),
+
+              //       // Stop listening button
+              //       if (_isListening)
+              //         FloatingActionButton(
+              //           onPressed: _stopListening,
+              //           backgroundColor: Colors.red,
+              //           child: const Icon(Icons.stop),
+              //         ),
+
+              //       // Next question button
+              //       if (_currentText.isNotEmpty &&
+              //           _currentText != 'Listening...')
+              //         ElevatedButton(
+              //           onPressed: _nextQuestion,
+              //           style: ElevatedButton.styleFrom(
+              //             backgroundColor: Colors.white,
+              //             foregroundColor: Colors.blue,
+              //             padding: EdgeInsets.symmetric(
+              //               horizontal: ResponsiveSize.width(30),
+              //               vertical: ResponsiveSize.height(15),
+              //             ),
+              //             shape: RoundedRectangleBorder(
+              //               borderRadius:
+              //                   BorderRadius.circular(ResponsiveSize.width(25)),
+              //             ),
+              //           ),
+              //           child: Text(
+              //             'Next Question',
+              //             style: TextStyle(
+              //               fontSize: ResponsiveSize.font(16),
+              //               fontWeight: FontWeight.bold,
+              //             ),
+              //           ),
+              //         ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
