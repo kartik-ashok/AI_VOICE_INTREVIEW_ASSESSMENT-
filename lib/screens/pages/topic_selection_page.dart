@@ -326,9 +326,9 @@ class TopicSelectionPage extends StatelessWidget {
                                 Text(
                                   topic,
                                   style: TextStyle(
-                                    fontSize: ResponsiveSize.font(16),
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      fontSize: ResponsiveSize.font(16),
+                                      fontWeight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
                                   textAlign: TextAlign.center,
                                 ),
                               ],

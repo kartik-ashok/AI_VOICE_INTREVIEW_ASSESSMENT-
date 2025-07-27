@@ -614,6 +614,7 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
                           flex: 1,
                           child: DropdownButtonFormField<String>(
                             value: _selectedTopic,
+                            isExpanded: true,
                             decoration: InputDecoration(
                               labelText: 'Topic',
                               labelStyle:
