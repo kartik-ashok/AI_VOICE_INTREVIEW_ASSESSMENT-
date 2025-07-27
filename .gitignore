@@ -49,4 +49,4 @@ firestore.rules
 .firebaserc
 
 
-lib\speechto_textpage.dart
+lib/speechto_textpage.dart
