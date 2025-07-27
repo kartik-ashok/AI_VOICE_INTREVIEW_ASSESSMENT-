@@ -1,6 +1,6 @@
- import 'package:flutter/material.dart';
-import '../services/firebase_service.dart';
-import '../models/interview_result.dart';
+import 'package:flutter/material.dart';
+import '../../services/firebase_service.dart';
+import '../../models/interview_result.dart';
 import 'test_detail_screen.dart';
 
 class TestHistoryScreen extends StatefulWidget {
@@ -55,11 +55,17 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
   void _filterResults() {
     setState(() {
       _filteredResults = _allResults.where((result) {
-        bool matchesSubject = _selectedSubject == 'All' || result.subject == _selectedSubject;
-        bool matchesTopic = _selectedTopic == 'All' || result.topic == _selectedTopic;
+        bool matchesSubject =
+            _selectedSubject == 'All' || result.subject == _selectedSubject;
+        bool matchesTopic =
+            _selectedTopic == 'All' || result.topic == _selectedTopic;
         bool matchesSearch = _searchController.text.isEmpty ||
-            result.subject.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-            result.topic.toLowerCase().contains(_searchController.text.toLowerCase());
+            result.subject
+                .toLowerCase()
+                .contains(_searchController.text.toLowerCase()) ||
+            result.topic
+                .toLowerCase()
+                .contains(_searchController.text.toLowerCase());
 
         return matchesSubject && matchesTopic && matchesSearch;
       }).toList();
@@ -74,7 +80,8 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
 
   List<String> get _topics {
     final topics = _allResults
-        .where((r) => _selectedSubject == 'All' || r.subject == _selectedSubject)
+        .where(
+            (r) => _selectedSubject == 'All' || r.subject == _selectedSubject)
         .map((r) => r.topic)
         .toSet()
         .toList();
@@ -96,7 +103,7 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
@@ -133,15 +140,18 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
                       ),
                       onChanged: (value) => _filterResults(),
                     ),
-                    
+
                     const SizedBox(height: 15),
-                    
+
                     // Filters
                     Row(
                       children: [
-                        Expanded(
+                        // Subject Dropdown
+                        Flexible(
+                          flex: 1,
                           child: DropdownButtonFormField<String>(
                             value: _selectedSubject,
+                            isExpanded: true, // 👈 Fix for icon/text overflow
                             decoration: InputDecoration(
                               labelText: 'Subject',
                               border: OutlineInputBorder(
@@ -153,7 +163,11 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
                             items: _subjects.map((subject) {
                               return DropdownMenuItem<String>(
                                 value: subject,
-                                child: Text(subject),
+                                child: Text(
+                                  subject,
+                                  overflow: TextOverflow
+                                      .ellipsis, // 👈 Prevent text overflow
+                                ),
                               );
                             }).toList(),
                             onChanged: (value) {
@@ -165,10 +179,12 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
                             },
                           ),
                         ),
-                        
-                        const SizedBox(width: 10),
-                        
-                        Expanded(
+
+                        const SizedBox(width: 8), // Slightly smaller spacing
+
+                        // Topic Dropdown
+                        Flexible(
+                          flex: 1,
                           child: DropdownButtonFormField<String>(
                             value: _selectedTopic,
                             decoration: InputDecoration(
@@ -195,9 +211,9 @@ class _TestHistoryScreenState extends State<TestHistoryScreen> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 10),
-                    
+
                     // Results Count
                     Text(
                       '${_filteredResults.length} test${_filteredResults.length == 1 ? '' : 's'} found',

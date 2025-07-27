@@ -30,7 +30,7 @@ class _IntroductionScreensState extends State<IntroductionScreens> {
         'description':
             'Get ready for an interactive interview experience with AI-powered questions and voice recognition.',
         'icon': Icons.mic,
-        'color': Colors.blue,
+        'color': Colors.pink,
       },
       {
         'title': 'How It Works',
@@ -57,7 +57,7 @@ class _IntroductionScreensState extends State<IntroductionScreens> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(

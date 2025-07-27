@@ -4,7 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'thank_you_page.dart';
-import '../services/firebase_service.dart';
+import '../../services/firebase_service.dart';
 
 class InterviewPage extends StatefulWidget {
   final String subject;
@@ -68,12 +68,13 @@ class _InterviewPageState extends State<InterviewPage>
     });
 
     try {
-      final questions = await FirebaseService.getQuestions(widget.subject, widget.topic);
+      final questions =
+          await FirebaseService.getQuestions(widget.subject, widget.topic);
       setState(() {
         _questions = questions;
         _isLoadingQuestions = false;
       });
-      
+
       if (questions.isNotEmpty) {
         _readCurrentQuestion();
       } else {
@@ -112,7 +113,7 @@ class _InterviewPageState extends State<InterviewPage>
     _flutterTts.setSpeechRate(0.5);
     _flutterTts.setVolume(1.0);
     _flutterTts.setPitch(1.0);
-    
+
     _flutterTts.setCompletionHandler(() {
       setState(() {
         _isSpeaking = false;
@@ -131,7 +132,7 @@ class _InterviewPageState extends State<InterviewPage>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    
+
     _pulseAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
@@ -228,7 +229,7 @@ class _InterviewPageState extends State<InterviewPage>
             _mouthAnimationController.stop();
           });
           _micTimer?.cancel();
-          
+
           // Auto-restart listening if it was stopped unexpectedly and we still have time
           if (_micTimer != null && _micTimer!.isActive) {
             setState(() {
@@ -255,7 +256,7 @@ class _InterviewPageState extends State<InterviewPage>
           _mouthAnimationController.stop();
         });
         _micTimer?.cancel();
-        
+
         // Auto-restart on error if we still have time
         if (_micTimer != null && _micTimer!.isActive) {
           setState(() {
@@ -299,7 +300,7 @@ class _InterviewPageState extends State<InterviewPage>
               // Show partial results while speaking
               _currentText = result.recognizedWords;
             }
-            
+
             if (result.hasConfidenceRating && result.confidence > 0) {
               _confidence = result.confidence;
             }
@@ -353,7 +354,7 @@ class _InterviewPageState extends State<InterviewPage>
     _micTimer?.cancel();
     _stopListening();
     _flutterTts.stop();
-    
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -484,9 +485,10 @@ class _InterviewPageState extends State<InterviewPage>
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = _questions.isNotEmpty && _currentQuestionIndex < _questions.length 
-        ? _questions[_currentQuestionIndex] 
-        : '';
+    final currentQuestion =
+        _questions.isNotEmpty && _currentQuestionIndex < _questions.length
+            ? _questions[_currentQuestionIndex]
+            : '';
 
     // Show loading screen while fetching questions
     if (_isLoadingQuestions) {
@@ -502,7 +504,7 @@ class _InterviewPageState extends State<InterviewPage>
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.blue, Colors.lightBlueAccent],
+              colors: [Colors.blue, Colors.red],
             ),
           ),
           child: const Center(
@@ -556,7 +558,7 @@ class _InterviewPageState extends State<InterviewPage>
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Color.fromARGB(255, 233, 171, 166)],
           ),
         ),
         child: SafeArea(
@@ -588,9 +590,12 @@ class _InterviewPageState extends State<InterviewPage>
                     ),
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
-                      value: _questions.isNotEmpty ? (_currentQuestionIndex + 1) / _questions.length : 0.0,
+                      value: _questions.isNotEmpty
+                          ? (_currentQuestionIndex + 1) / _questions.length
+                          : 0.0,
                       backgroundColor: Colors.white.withOpacity(0.3),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ],
                 ),
@@ -634,7 +639,9 @@ class _InterviewPageState extends State<InterviewPage>
                       Expanded(
                         child: Center(
                           child: Text(
-                            currentQuestion.isNotEmpty ? currentQuestion : 'Loading question...',
+                            currentQuestion.isNotEmpty
+                                ? currentQuestion
+                                : 'Loading question...',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -644,7 +651,7 @@ class _InterviewPageState extends State<InterviewPage>
                           ),
                         ),
                       ),
-                      
+
                       // Status indicators
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -656,7 +663,12 @@ class _InterviewPageState extends State<InterviewPage>
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.blue,
+                                // color: Colors.blue,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [Colors.blue, Colors.red],
+                                ),
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: const Row(
@@ -707,6 +719,9 @@ class _InterviewPageState extends State<InterviewPage>
                                 ],
                               ),
                             ),
+                          SizedBox(
+                            width: 6,
+                          ),
                           if (_isListening)
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -813,10 +828,11 @@ class _InterviewPageState extends State<InterviewPage>
                     // Manual mic button
                     FloatingActionButton(
                       onPressed: _isWaitingForAnswer ? _startListening : null,
-                      backgroundColor: _isWaitingForAnswer ? Colors.green : Colors.grey,
+                      backgroundColor:
+                          _isWaitingForAnswer ? Colors.green : Colors.grey,
                       child: const Icon(Icons.mic),
                     ),
-                    
+
                     // Stop listening button
                     if (_isListening)
                       FloatingActionButton(
@@ -824,9 +840,10 @@ class _InterviewPageState extends State<InterviewPage>
                         backgroundColor: Colors.red,
                         child: const Icon(Icons.stop),
                       ),
-                    
+
                     // Next question button
-                    if (_currentText.isNotEmpty && _currentText != 'Listening...')
+                    if (_currentText.isNotEmpty &&
+                        _currentText != 'Listening...')
                       ElevatedButton(
                         onPressed: _nextQuestion,
                         style: ElevatedButton.styleFrom(
@@ -870,4 +887,4 @@ class _InterviewPageState extends State<InterviewPage>
     _flutterTts.stop();
     super.dispose();
   }
-} 
+}

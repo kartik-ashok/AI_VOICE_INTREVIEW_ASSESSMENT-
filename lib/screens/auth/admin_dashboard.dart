@@ -27,10 +27,34 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   final Map<String, List<String>> _topicsBySubject = {
     'Data Analysis': ['DBMS', 'Python', 'Excel', 'PowerBI', 'All'],
-    'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'Big Data', 'All'],
-    'Business Analyst': ['Requirements', 'Process Analysis', 'Documentation', 'Stakeholder Management', 'All'],
-    'Software Engineer': ['Programming', 'Algorithms', 'System Design', 'Data Structures', 'All'],
-    'Sales': ['Communication', 'Negotiation', 'CRM', 'Product Knowledge', 'All'],
+    'Data Scientist': [
+      'Python',
+      'Machine Learning',
+      'Statistics',
+      'Big Data',
+      'All'
+    ],
+    'Business Analyst': [
+      'Requirements',
+      'Process Analysis',
+      'Documentation',
+      'Stakeholder Management',
+      'All'
+    ],
+    'Software Engineer': [
+      'Programming',
+      'Algorithms',
+      'System Design',
+      'Data Structures',
+      'All'
+    ],
+    'Sales': [
+      'Communication',
+      'Negotiation',
+      'CRM',
+      'Product Knowledge',
+      'All'
+    ],
   };
 
   @override
@@ -92,11 +116,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${_questions.length} questions added successfully!'),
+              content:
+                  Text('${_questions.length} questions added successfully!'),
               backgroundColor: Colors.green,
             ),
           );
-          
+
           setState(() {
             _questions.clear();
           });
@@ -160,7 +185,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
@@ -202,9 +227,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Question Form
                 Expanded(
                   child: Card(
@@ -226,9 +251,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             // Subject Dropdown
                             DropdownButtonFormField<String>(
                               value: _selectedSubject,
@@ -253,9 +278,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 });
                               },
                             ),
-                            
+
                             const SizedBox(height: 15),
-                            
+
                             // Topic Dropdown
                             DropdownButtonFormField<String>(
                               value: _selectedTopic,
@@ -267,7 +292,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 filled: true,
                                 fillColor: Colors.grey[50],
                               ),
-                              items: _topicsBySubject[_selectedSubject]!.map((String topic) {
+                              items: _topicsBySubject[_selectedSubject]!
+                                  .map((String topic) {
                                 return DropdownMenuItem<String>(
                                   value: topic,
                                   child: Text(topic),
@@ -279,9 +305,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 });
                               },
                             ),
-                            
+
                             const SizedBox(height: 15),
-                            
+
                             // Question Input
                             Row(
                               children: [
@@ -297,7 +323,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       fillColor: Colors.grey[50],
                                     ),
                                     validator: (value) {
-                                      if (value == null || value.trim().isEmpty) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
                                         return 'Please enter a question';
                                       }
                                       return null;
@@ -318,9 +345,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 ),
                               ],
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             // Questions List
                             Expanded(
                               child: Column(
@@ -333,9 +360,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  
                                   const SizedBox(height: 10),
-                                  
                                   Expanded(
                                     child: _questions.isEmpty
                                         ? const Center(
@@ -351,15 +376,20 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                             itemCount: _questions.length,
                                             itemBuilder: (context, index) {
                                               return Card(
-                                                margin: const EdgeInsets.only(bottom: 8),
+                                                margin: const EdgeInsets.only(
+                                                    bottom: 8),
                                                 child: ListTile(
                                                   title: Text(
                                                     _questions[index],
-                                                    style: const TextStyle(fontSize: 14),
+                                                    style: const TextStyle(
+                                                        fontSize: 14),
                                                   ),
                                                   trailing: IconButton(
-                                                    icon: const Icon(Icons.delete, color: Colors.red),
-                                                    onPressed: () => _removeQuestion(index),
+                                                    icon: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red),
+                                                    onPressed: () =>
+                                                        _removeQuestion(index),
                                                   ),
                                                 ),
                                               );
@@ -369,15 +399,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 ],
                               ),
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             // Save Button
                             SizedBox(
                               width: double.infinity,
                               height: 50,
                               child: ElevatedButton(
-                                onPressed: _isLoading || _questions.isEmpty ? null : _saveQuestions,
+                                onPressed: _isLoading || _questions.isEmpty
+                                    ? null
+                                    : _saveQuestions,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue,
                                   foregroundColor: Colors.white,
@@ -386,7 +418,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   ),
                                 ),
                                 child: _isLoading
-                                    ? const CircularProgressIndicator(color: Colors.white)
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white)
                                     : const Text(
                                         'Save Questions',
                                         style: TextStyle(
@@ -409,4 +442,4 @@ class _AdminDashboardState extends State<AdminDashboard> {
       ),
     );
   }
-} 
+}

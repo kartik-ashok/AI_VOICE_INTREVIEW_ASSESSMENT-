@@ -1,8 +1,8 @@
-import 'package:ai_voice_intreview/screens/test_detail_screen.dart';
+import 'package:ai_voice_intreview/screens/pages/test_detail_screen.dart';
 import 'package:flutter/material.dart';
-import '../services/firebase_service.dart';
-import '../models/interview_result.dart';
-import 'auth/login_screen.dart';
+import '../../services/firebase_service.dart';
+import '../../models/interview_result.dart';
+import '../auth/login_screen.dart';
 import 'test_history_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -33,6 +33,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (user != null) {
         final stats = await FirebaseService.getUserStats(user.uid);
         final results = await FirebaseService.getUserInterviewResults(user.uid);
+        // final results = await FirebaseService.getUserInterviewResults('jNwm0iUT75gsZ2oBHQQ0IyTioQA2');
+        print(results);
 
         setState(() {
           _userStats = stats;
@@ -109,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Color.fromARGB(255, 231, 174, 170)],
           ),
         ),
         child: SafeArea(

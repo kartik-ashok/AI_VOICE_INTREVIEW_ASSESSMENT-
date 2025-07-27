@@ -5,7 +5,8 @@ class TopicSelectionPage extends StatelessWidget {
   final String subject;
   final List<String> topics;
 
-  const TopicSelectionPage({super.key, required this.subject, required this.topics});
+  const TopicSelectionPage(
+      {super.key, required this.subject, required this.topics});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +22,14 @@ class TopicSelectionPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'Choose Your Topic',
                 style: const TextStyle(
                   fontSize: 28,
@@ -58,7 +59,8 @@ class TopicSelectionPage extends StatelessWidget {
                   ),
                   child: GridView.builder(
                     padding: const EdgeInsets.all(20),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 15,
                       mainAxisSpacing: 15,
@@ -205,4 +207,4 @@ class TopicSelectionPage extends StatelessWidget {
         return Icons.topic;
     }
   }
-} 
+}

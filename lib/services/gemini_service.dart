@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class GeminiService {
-  static const String _apiKey = 'YOUR_GEMINI_API_KEY'; // Replace with your actual API key
-  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+  // static const String _apiKey = ; // Replace with your actual API key
+  static final String _apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+  static const String _baseUrl =
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-  static Future<String?> generateAnswer(String question, String userAnswer, String subject, String topic) async {
+  static Future<String?> generateAnswer(
+      String question, String userAnswer, String subject, String topic) async {
     try {
       final prompt = _buildPrompt(question, userAnswer, subject, topic);
-      
+
       final response = await http.post(
         Uri.parse('$_baseUrl?key=$_apiKey'),
         headers: {
@@ -46,7 +50,8 @@ class GeminiService {
     }
   }
 
-  static String _buildPrompt(String question, String userAnswer, String subject, String topic) {
+  static String _buildPrompt(
+      String question, String userAnswer, String subject, String topic) {
     return '''
 You are an expert interviewer and career coach specializing in $subject with focus on $topic.
 
@@ -83,4 +88,4 @@ Format your response in a clear, structured manner.
       return null;
     }
   }
-} 
+}

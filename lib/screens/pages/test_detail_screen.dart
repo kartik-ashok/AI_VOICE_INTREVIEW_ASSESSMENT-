@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/interview_result.dart';
-import '../services/firebase_service.dart';
-import '../services/gemini_service.dart';
+import '../../models/interview_result.dart';
+import '../../services/firebase_service.dart';
+import '../../services/gemini_service.dart';
 
 class TestDetailScreen extends StatefulWidget {
   final InterviewResult result;
@@ -30,7 +30,7 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
@@ -101,7 +101,8 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
                     LinearProgressIndicator(
                       value: widget.result.score,
                       backgroundColor: Colors.grey[300],
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.blue),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -148,7 +149,8 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
   }
 
   Widget _buildQuestionCard(QuestionAnswer questionAnswer, int index) {
-    final hasAiFeedback = questionAnswer.hasAiFeedback || _aiFeedbackCache.containsKey(index);
+    final hasAiFeedback =
+        questionAnswer.hasAiFeedback || _aiFeedbackCache.containsKey(index);
     final isLoading = _loadingAiFeedback[index] ?? false;
     final aiFeedback = _aiFeedbackCache[index] ?? questionAnswer.aiFeedback;
 
@@ -194,9 +196,9 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
                   questionAnswer.question,
                   style: const TextStyle(fontSize: 15),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // User Answer
                 const Text(
                   'Your Answer:',
@@ -218,9 +220,9 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
                     style: const TextStyle(fontSize: 15),
                   ),
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // AI Feedback Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -234,20 +236,22 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
                     ),
                     if (!hasAiFeedback && !isLoading)
                       ElevatedButton.icon(
-                        onPressed: () => _requestAiFeedback(index, questionAnswer),
+                        onPressed: () =>
+                            _requestAiFeedback(index, questionAnswer),
                         icon: const Icon(Icons.auto_awesome, size: 16),
                         label: const Text('Get AI Feedback'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                         ),
                       ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 8),
-                
+
                 // AI Feedback Content
                 if (isLoading)
                   const Center(
@@ -273,15 +277,15 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
+                        const Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.auto_awesome,
                               color: Colors.green,
                               size: 20,
                             ),
-                            const SizedBox(width: 8),
-                            const Text(
+                            SizedBox(width: 8),
+                            Text(
                               'AI Feedback',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -334,7 +338,8 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
     );
   }
 
-  Future<void> _requestAiFeedback(int index, QuestionAnswer questionAnswer) async {
+  Future<void> _requestAiFeedback(
+      int index, QuestionAnswer questionAnswer) async {
     setState(() {
       _loadingAiFeedback[index] = true;
     });
@@ -363,11 +368,12 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
         setState(() {
           _loadingAiFeedback[index] = false;
         });
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Failed to generate AI feedback. Please try again.'),
+              content:
+                  Text('Failed to generate AI feedback. Please try again.'),
               backgroundColor: Colors.red,
             ),
           );
@@ -377,7 +383,7 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
       setState(() {
         _loadingAiFeedback[index] = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -394,4 +400,4 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
     int remainingSeconds = seconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
-} 
+}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'topic_selection_page.dart';
-import '../services/firebase_service.dart';
+import '../../services/firebase_service.dart';
 import 'profile_screen.dart'; // Added import for ProfileScreen
 
 class SubjectSelectionPage extends StatefulWidget {
@@ -39,7 +39,7 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Choose Your Interview Subject'),
+          title: const Text('Choose Your Focus Area'),
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
           elevation: 0,
@@ -49,7 +49,7 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.blue, Colors.lightBlueAccent],
+              colors: [Colors.blue, Colors.red],
             ),
           ),
           child: const Center(
@@ -75,21 +75,45 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
     }
 
     final subjects = _subjectsAndTopics.keys.toList();
-    
+
     // Default subjects if Firebase fails
     if (subjects.isEmpty) {
       _subjectsAndTopics = {
         'Data Analysis': ['DBMS', 'Python', 'Excel', 'PowerBI', 'All'],
-        'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'Big Data', 'All'],
-        'Business Analyst': ['Requirements', 'Process Analysis', 'Documentation', 'Stakeholder Management', 'All'],
-        'Software Engineer': ['Programming', 'Algorithms', 'System Design', 'Data Structures', 'All'],
-        'Sales': ['Communication', 'Negotiation', 'CRM', 'Product Knowledge', 'All'],
+        'Data Scientist': [
+          'Python',
+          'Machine Learning',
+          'Statistics',
+          'Big Data',
+          'All'
+        ],
+        'Business Analyst': [
+          'Requirements',
+          'Process Analysis',
+          'Documentation',
+          'Stakeholder Management',
+          'All'
+        ],
+        'Software Engineer': [
+          'Programming',
+          'Algorithms',
+          'System Design',
+          'Data Structures',
+          'All'
+        ],
+        'Sales': [
+          'Communication',
+          'Negotiation',
+          'CRM',
+          'Product Knowledge',
+          'All'
+        ],
       };
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Choose Your Interview Subject'),
+        title: const Text('Choose Your Focus Area'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -112,7 +136,7 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
@@ -120,7 +144,7 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
             children: [
               const SizedBox(height: 20),
               const Text(
-                'Select Your Interview Subject',
+                'Interview Spotlight',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -153,8 +177,9 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
                     itemBuilder: (context, index) {
                       final subject = _subjectsAndTopics.keys.elementAt(index);
                       final topics = _subjectsAndTopics[subject]!;
-                      final description = topics.take(3).join(', ') + (topics.length > 3 ? '...' : '');
-                      
+                      final description = topics.take(3).join(', ') +
+                          (topics.length > 3 ? '...' : '');
+
                       return Card(
                         margin: const EdgeInsets.only(bottom: 15),
                         elevation: 4,
@@ -193,7 +218,8 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
                                 const SizedBox(width: 20),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         subject,
@@ -266,4 +292,4 @@ class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
         return Icons.school;
     }
   }
-} 
+}

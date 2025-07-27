@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/firebase_service.dart';
-import '../models/interview_result.dart';
+import '../../services/firebase_service.dart';
+import '../../models/interview_result.dart';
 import 'subject_selection_page.dart';
 import 'profile_screen.dart';
 
@@ -41,10 +41,13 @@ class _ThankYouPageState extends State<ThankYouPage> {
       final user = FirebaseService.currentUser;
       if (user != null) {
         // Create question-answer pairs
-        final questions = await FirebaseService.getQuestions(widget.subject, widget.topic);
+        final questions =
+            await FirebaseService.getQuestions(widget.subject, widget.topic);
         final questionAnswers = <QuestionAnswer>[];
-        
-        for (int i = 0; i < questions.length && i < widget.answers.length; i++) {
+
+        for (int i = 0;
+            i < questions.length && i < widget.answers.length;
+            i++) {
           questionAnswers.add(QuestionAnswer(
             question: questions[i],
             userAnswer: widget.answers[i],
@@ -69,7 +72,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
 
         // Save to Firestore
         final success = await FirebaseService.saveInterviewResult(result);
-        
+
         if (success) {
           setState(() {
             _resultId = result.id;
@@ -90,26 +93,26 @@ class _ThankYouPageState extends State<ThankYouPage> {
 
   double _calculateScore(List<String> answers) {
     if (answers.isEmpty) return 0.0;
-    
+
     double totalScore = 0.0;
     for (String answer in answers) {
       // Simple scoring based on answer length and content
       double answerScore = 0.0;
-      
+
       if (answer.length > 50) answerScore += 0.3;
       if (answer.length > 100) answerScore += 0.2;
       if (answer.length > 200) answerScore += 0.2;
-      
+
       // Bonus for meaningful content
-      if (answer.toLowerCase().contains('because') || 
+      if (answer.toLowerCase().contains('because') ||
           answer.toLowerCase().contains('example') ||
           answer.toLowerCase().contains('experience')) {
         answerScore += 0.3;
       }
-      
+
       totalScore += answerScore.clamp(0.0, 1.0);
     }
-    
+
     return (totalScore / answers.length).clamp(0.0, 1.0);
   }
 
@@ -121,7 +124,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
@@ -152,9 +155,9 @@ class _ThankYouPageState extends State<ThankYouPage> {
                       color: Colors.green,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Title
                   const Text(
                     'Interview Completed!',
@@ -165,9 +168,9 @@ class _ThankYouPageState extends State<ThankYouPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  
+
                   const SizedBox(height: 15),
-                  
+
                   // Subtitle
                   Text(
                     'Great job completing your ${widget.subject} interview',
@@ -177,9 +180,9 @@ class _ThankYouPageState extends State<ThankYouPage> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Summary Card
                   Container(
                     padding: const EdgeInsets.all(25),
@@ -203,14 +206,13 @@ class _ThankYouPageState extends State<ThankYouPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        
                         const SizedBox(height: 20),
-                        
                         _buildSummaryRow('Subject', widget.subject),
                         _buildSummaryRow('Topic', widget.topic),
-                        _buildSummaryRow('Questions Answered', '${widget.answers.length}'),
-                        _buildSummaryRow('Time Taken', _formatTime(widget.timeElapsed)),
-                        
+                        _buildSummaryRow(
+                            'Questions Answered', '${widget.answers.length}'),
+                        _buildSummaryRow(
+                            'Time Taken', _formatTime(widget.timeElapsed)),
                         if (_isSaving)
                           const Padding(
                             padding: EdgeInsets.only(top: 15),
@@ -220,7 +222,8 @@ class _ThankYouPageState extends State<ThankYouPage> {
                                 SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
                                 ),
                                 SizedBox(width: 10),
                                 Text(
@@ -236,9 +239,9 @@ class _ThankYouPageState extends State<ThankYouPage> {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 30),
-                  
+
                   // Action Buttons
                   Row(
                     children: [
@@ -248,7 +251,8 @@ class _ThankYouPageState extends State<ThankYouPage> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const SubjectSelectionPage(),
+                                builder: (context) =>
+                                    const SubjectSelectionPage(),
                               ),
                               (route) => false,
                             );
@@ -270,9 +274,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                           ),
                         ),
                       ),
-                      
                       const SizedBox(width: 15),
-                      
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
@@ -342,4 +344,4 @@ class _ThankYouPageState extends State<ThankYouPage> {
     int remainingSeconds = seconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
-} 
+}

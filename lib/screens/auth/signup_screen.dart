@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/firebase_service.dart';
-import '../subject_selection_page.dart';
+import '../pages/subject_selection_page.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -60,7 +60,7 @@ class _SignupScreenState extends State<SignupScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          
+
           // Navigate to subject selection
           Navigator.pushReplacement(
             context,
@@ -111,7 +111,7 @@ class _SignupScreenState extends State<SignupScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightBlueAccent],
+            colors: [Colors.blue, Colors.red],
           ),
         ),
         child: SafeArea(
@@ -144,9 +144,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: Colors.white,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Title
                         const Text(
                           'Create Account',
@@ -156,9 +156,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: Colors.black87,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 10),
-                        
+
                         const Text(
                           'Join AI Voice Interview',
                           style: TextStyle(
@@ -166,9 +166,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: Colors.grey,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 30),
-                        
+
                         // Email Field
                         TextFormField(
                           controller: _emailController,
@@ -186,7 +186,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                .hasMatch(value)) {
                               return 'Please enter a valid email';
                             }
                             if (FirebaseService.isAdmin(value.trim())) {
@@ -195,9 +196,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Password Field
                         TextFormField(
                           controller: _passwordController,
@@ -207,7 +208,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             prefixIcon: const Icon(Icons.lock),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                _obscurePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
                                 setState(() {
@@ -231,9 +234,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Confirm Password Field
                         TextFormField(
                           controller: _confirmPasswordController,
@@ -243,11 +246,14 @@ class _SignupScreenState extends State<SignupScreen> {
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                                _obscureConfirmPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _obscureConfirmPassword = !_obscureConfirmPassword;
+                                  _obscureConfirmPassword =
+                                      !_obscureConfirmPassword;
                                 });
                               },
                             ),
@@ -267,9 +273,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             return null;
                           },
                         ),
-                        
+
                         const SizedBox(height: 30),
-                        
+
                         // Sign Up Button
                         SizedBox(
                           width: double.infinity,
@@ -284,7 +290,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             ),
                             child: _isLoading
-                                ? const CircularProgressIndicator(color: Colors.white)
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
                                 : const Text(
                                     'Sign Up',
                                     style: TextStyle(
@@ -294,9 +301,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                           ),
                         ),
-                        
+
                         const SizedBox(height: 20),
-                        
+
                         // Sign In Link
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -330,4 +337,4 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
-} 
+}

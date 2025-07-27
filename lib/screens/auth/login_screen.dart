@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/firebase_service.dart';
-import '../subject_selection_page.dart';
+import '../pages/subject_selection_page.dart';
 import 'admin_dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
