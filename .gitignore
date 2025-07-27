@@ -47,3 +47,6 @@ firebase.json
 firestore.indexes.json
 firestore.rules
 .firebaserc
+
+
+lib\speechto_textpage.dart
