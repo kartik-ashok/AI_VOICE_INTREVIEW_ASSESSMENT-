@@ -1,43 +1,91 @@
 import 'package:flutter/material.dart';
 import 'topic_selection_page.dart';
+import '../services/firebase_service.dart';
+import 'profile_screen.dart'; // Added import for ProfileScreen
 
-class SubjectSelectionPage extends StatelessWidget {
+class SubjectSelectionPage extends StatefulWidget {
   const SubjectSelectionPage({super.key});
 
   @override
+  State<SubjectSelectionPage> createState() => _SubjectSelectionPageState();
+}
+
+class _SubjectSelectionPageState extends State<SubjectSelectionPage> {
+  bool _isLoading = true;
+  Map<String, List<String>> _subjectsAndTopics = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSubjectsAndTopics();
+  }
+
+  Future<void> _loadSubjectsAndTopics() async {
+    try {
+      final data = await FirebaseService.getSubjectsAndTopics();
+      setState(() {
+        _subjectsAndTopics = data;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final subjects = [
-      {
-        'name': 'Data Analysis',
-        'icon': Icons.analytics,
-        'color': Colors.blue,
-        'description': 'Excel, SQL, PowerBI, Statistics'
-      },
-      {
-        'name': 'Data Scientist',
-        'icon': Icons.science,
-        'color': Colors.purple,
-        'description': 'Python, ML, Statistics, Big Data'
-      },
-      {
-        'name': 'Business Analyst',
-        'icon': Icons.business,
-        'color': Colors.green,
-        'description': 'Requirements, Process Analysis, Documentation'
-      },
-      {
-        'name': 'Software Engineer',
-        'icon': Icons.code,
-        'color': Colors.orange,
-        'description': 'Programming, Algorithms, System Design'
-      },
-      {
-        'name': 'Sales',
-        'icon': Icons.trending_up,
-        'color': Colors.red,
-        'description': 'Communication, Negotiation, CRM'
-      },
-    ];
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Choose Your Interview Subject'),
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.blue, Colors.lightBlueAccent],
+            ),
+          ),
+          child: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Loading subjects...',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    final subjects = _subjectsAndTopics.keys.toList();
+    
+    // Default subjects if Firebase fails
+    if (subjects.isEmpty) {
+      _subjectsAndTopics = {
+        'Data Analysis': ['DBMS', 'Python', 'Excel', 'PowerBI', 'All'],
+        'Data Scientist': ['Python', 'Machine Learning', 'Statistics', 'Big Data', 'All'],
+        'Business Analyst': ['Requirements', 'Process Analysis', 'Documentation', 'Stakeholder Management', 'All'],
+        'Software Engineer': ['Programming', 'Algorithms', 'System Design', 'Data Structures', 'All'],
+        'Sales': ['Communication', 'Negotiation', 'CRM', 'Product Knowledge', 'All'],
+      };
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -45,6 +93,19 @@ class SubjectSelectionPage extends StatelessWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -88,9 +149,12 @@ class SubjectSelectionPage extends StatelessWidget {
                   ),
                   child: ListView.builder(
                     padding: const EdgeInsets.all(20),
-                    itemCount: subjects.length,
+                    itemCount: _subjectsAndTopics.length,
                     itemBuilder: (context, index) {
-                      final subject = subjects[index];
+                      final subject = _subjectsAndTopics.keys.elementAt(index);
+                      final topics = _subjectsAndTopics[subject]!;
+                      final description = topics.take(3).join(', ') + (topics.length > 3 ? '...' : '');
+                      
                       return Card(
                         margin: const EdgeInsets.only(bottom: 15),
                         elevation: 4,
@@ -103,7 +167,8 @@ class SubjectSelectionPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => TopicSelectionPage(
-                                  subject: subject['name'] as String,
+                                  subject: subject,
+                                  topics: topics,
                                 ),
                               ),
                             );
@@ -116,11 +181,11 @@ class SubjectSelectionPage extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: subject['color'] as Color,
+                                    color: _getSubjectColor(subject),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Icon(
-                                    subject['icon'] as IconData,
+                                    _getSubjectIcon(subject),
                                     color: Colors.white,
                                     size: 30,
                                   ),
@@ -131,7 +196,7 @@ class SubjectSelectionPage extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        subject['name'] as String,
+                                        subject,
                                         style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
@@ -139,7 +204,7 @@ class SubjectSelectionPage extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
-                                        subject['description'] as String,
+                                        description,
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: Colors.grey[600],
@@ -166,5 +231,39 @@ class SubjectSelectionPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getSubjectColor(String subject) {
+    switch (subject) {
+      case 'Data Analysis':
+        return Colors.blue;
+      case 'Data Scientist':
+        return Colors.purple;
+      case 'Business Analyst':
+        return Colors.green;
+      case 'Software Engineer':
+        return Colors.orange;
+      case 'Sales':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData _getSubjectIcon(String subject) {
+    switch (subject) {
+      case 'Data Analysis':
+        return Icons.analytics;
+      case 'Data Scientist':
+        return Icons.science;
+      case 'Business Analyst':
+        return Icons.business;
+      case 'Software Engineer':
+        return Icons.code;
+      case 'Sales':
+        return Icons.trending_up;
+      default:
+        return Icons.school;
+    }
   }
 } 

@@ -3,53 +3,12 @@ import 'introduction_screens.dart';
 
 class TopicSelectionPage extends StatelessWidget {
   final String subject;
+  final List<String> topics;
 
-  const TopicSelectionPage({super.key, required this.subject});
-
-  Map<String, List<Map<String, dynamic>>> getTopicsBySubject() {
-    return {
-      'Data Analysis': [
-        {'name': 'DBMS', 'icon': Icons.storage, 'color': Colors.indigo},
-        {'name': 'Python', 'icon': Icons.code, 'color': Colors.blue},
-        {'name': 'Excel', 'icon': Icons.table_chart, 'color': Colors.green},
-        {'name': 'PowerBI', 'icon': Icons.analytics, 'color': Colors.orange},
-        {'name': 'All', 'icon': Icons.all_inclusive, 'color': Colors.purple},
-      ],
-      'Data Scientist': [
-        {'name': 'Python', 'icon': Icons.code, 'color': Colors.blue},
-        {'name': 'Machine Learning', 'icon': Icons.psychology, 'color': Colors.purple},
-        {'name': 'Statistics', 'icon': Icons.trending_up, 'color': Colors.green},
-        {'name': 'Big Data', 'icon': Icons.cloud, 'color': Colors.orange},
-        {'name': 'All', 'icon': Icons.all_inclusive, 'color': Colors.red},
-      ],
-      'Business Analyst': [
-        {'name': 'Requirements', 'icon': Icons.description, 'color': Colors.blue},
-        {'name': 'Process Analysis', 'icon': Icons.account_tree, 'color': Colors.green},
-        {'name': 'Documentation', 'icon': Icons.article, 'color': Colors.orange},
-        {'name': 'Stakeholder Management', 'icon': Icons.people, 'color': Colors.purple},
-        {'name': 'All', 'icon': Icons.all_inclusive, 'color': Colors.indigo},
-      ],
-      'Software Engineer': [
-        {'name': 'Programming', 'icon': Icons.code, 'color': Colors.blue},
-        {'name': 'Algorithms', 'icon': Icons.functions, 'color': Colors.green},
-        {'name': 'System Design', 'icon': Icons.architecture, 'color': Colors.orange},
-        {'name': 'Data Structures', 'icon': Icons.storage, 'color': Colors.purple},
-        {'name': 'All', 'icon': Icons.all_inclusive, 'color': Colors.red},
-      ],
-      'Sales': [
-        {'name': 'Communication', 'icon': Icons.chat, 'color': Colors.blue},
-        {'name': 'Negotiation', 'icon': Icons.handshake, 'color': Colors.green},
-        {'name': 'CRM', 'icon': Icons.people_alt, 'color': Colors.orange},
-        {'name': 'Product Knowledge', 'icon': Icons.inventory, 'color': Colors.purple},
-        {'name': 'All', 'icon': Icons.all_inclusive, 'color': Colors.indigo},
-      ],
-    };
-  }
+  const TopicSelectionPage({super.key, required this.subject, required this.topics});
 
   @override
   Widget build(BuildContext context) {
-    final topics = getTopicsBySubject()[subject] ?? [];
-
     return Scaffold(
       appBar: AppBar(
         title: Text('$subject Topics'),
@@ -120,7 +79,7 @@ class TopicSelectionPage extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => IntroductionScreens(
                                   subject: subject,
-                                  topic: topic['name'] as String,
+                                  topic: topic,
                                 ),
                               ),
                             );
@@ -134,18 +93,18 @@ class TopicSelectionPage extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.all(15),
                                   decoration: BoxDecoration(
-                                    color: topic['color'] as Color,
+                                    color: _getTopicColor(topic),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                   child: Icon(
-                                    topic['icon'] as IconData,
+                                    _getTopicIcon(topic),
                                     color: Colors.white,
                                     size: 35,
                                   ),
                                 ),
                                 const SizedBox(height: 15),
                                 Text(
-                                  topic['name'] as String,
+                                  topic,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -166,5 +125,84 @@ class TopicSelectionPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _getTopicColor(String topic) {
+    switch (topic) {
+      case 'DBMS':
+      case 'Python':
+      case 'Requirements':
+      case 'Programming':
+      case 'Communication':
+        return Colors.blue;
+      case 'Excel':
+      case 'Machine Learning':
+      case 'Process Analysis':
+      case 'Algorithms':
+      case 'Negotiation':
+        return Colors.green;
+      case 'PowerBI':
+      case 'Big Data':
+      case 'Documentation':
+      case 'System Design':
+      case 'CRM':
+        return Colors.orange;
+      case 'Statistics':
+      case 'Stakeholder Management':
+      case 'Data Structures':
+      case 'Product Knowledge':
+        return Colors.purple;
+      case 'All':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData _getTopicIcon(String topic) {
+    switch (topic) {
+      case 'DBMS':
+        return Icons.storage;
+      case 'Python':
+        return Icons.code;
+      case 'Excel':
+        return Icons.table_chart;
+      case 'PowerBI':
+        return Icons.analytics;
+      case 'Machine Learning':
+        return Icons.psychology;
+      case 'Statistics':
+        return Icons.trending_up;
+      case 'Big Data':
+        return Icons.cloud;
+      case 'Requirements':
+        return Icons.description;
+      case 'Process Analysis':
+        return Icons.account_tree;
+      case 'Documentation':
+        return Icons.article;
+      case 'Stakeholder Management':
+        return Icons.people;
+      case 'Programming':
+        return Icons.code;
+      case 'Algorithms':
+        return Icons.functions;
+      case 'System Design':
+        return Icons.architecture;
+      case 'Data Structures':
+        return Icons.storage;
+      case 'Communication':
+        return Icons.chat;
+      case 'Negotiation':
+        return Icons.handshake;
+      case 'CRM':
+        return Icons.people_alt;
+      case 'Product Knowledge':
+        return Icons.inventory;
+      case 'All':
+        return Icons.all_inclusive;
+      default:
+        return Icons.topic;
+    }
   }
 } 

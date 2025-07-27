@@ -4,7 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'thank_you_page.dart';
-import '../data/questions_data.dart';
+import '../services/firebase_service.dart';
 
 class InterviewPage extends StatefulWidget {
   final String subject;
@@ -35,6 +35,8 @@ class _InterviewPageState extends State<InterviewPage>
   List<String> _answers = [];
   bool _isQuestionRead = false;
   bool _isWaitingForAnswer = false;
+  List<String> _questions = [];
+  bool _isLoadingQuestions = true;
 
   // Animation controllers
   late AnimationController _micAnimationController;
@@ -57,7 +59,47 @@ class _InterviewPageState extends State<InterviewPage>
     _initializeAnimations();
     _requestPermissions();
     _startTimer();
-    _readCurrentQuestion();
+    _loadQuestions();
+  }
+
+  Future<void> _loadQuestions() async {
+    setState(() {
+      _isLoadingQuestions = true;
+    });
+
+    try {
+      final questions = await FirebaseService.getQuestions(widget.subject, widget.topic);
+      setState(() {
+        _questions = questions;
+        _isLoadingQuestions = false;
+      });
+      
+      if (questions.isNotEmpty) {
+        _readCurrentQuestion();
+      } else {
+        // No questions found, show error
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No questions found for this topic'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoadingQuestions = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading questions: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _initializeSpeech() {
@@ -151,7 +193,7 @@ class _InterviewPageState extends State<InterviewPage>
   }
 
   Future<void> _readCurrentQuestion() async {
-    if (_currentQuestionIndex >= getQuestions(widget.subject, widget.topic).length) {
+    if (_questions.isEmpty || _currentQuestionIndex >= _questions.length) {
       _finishInterview();
       return;
     }
@@ -162,7 +204,7 @@ class _InterviewPageState extends State<InterviewPage>
       _isWaitingForAnswer = false;
     });
 
-    final question = getQuestions(widget.subject, widget.topic)[_currentQuestionIndex];
+    final question = _questions[_currentQuestionIndex];
     await _flutterTts.speak(question);
   }
 
@@ -299,7 +341,7 @@ class _InterviewPageState extends State<InterviewPage>
       _isWaitingForAnswer = false;
     });
 
-    if (_currentQuestionIndex < getQuestions(widget.subject, widget.topic).length) {
+    if (_questions.isNotEmpty && _currentQuestionIndex < _questions.length) {
       _readCurrentQuestion();
     } else {
       _finishInterview();
@@ -442,10 +484,48 @@ class _InterviewPageState extends State<InterviewPage>
 
   @override
   Widget build(BuildContext context) {
-    final questions = getQuestions(widget.subject, widget.topic);
-    final currentQuestion = _currentQuestionIndex < questions.length 
-        ? questions[_currentQuestionIndex] 
+    final currentQuestion = _questions.isNotEmpty && _currentQuestionIndex < _questions.length 
+        ? _questions[_currentQuestionIndex] 
         : '';
+
+    // Show loading screen while fetching questions
+    if (_isLoadingQuestions) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.subject} - ${widget.topic}'),
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.blue, Colors.lightBlueAccent],
+            ),
+          ),
+          child: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Loading questions...',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -491,7 +571,7 @@ class _InterviewPageState extends State<InterviewPage>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Question ${_currentQuestionIndex + 1} of ${questions.length}',
+                          'Question ${_currentQuestionIndex + 1} of ${_questions.length}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
@@ -508,7 +588,7 @@ class _InterviewPageState extends State<InterviewPage>
                     ),
                     const SizedBox(height: 10),
                     LinearProgressIndicator(
-                      value: (_currentQuestionIndex + 1) / questions.length,
+                      value: _questions.isNotEmpty ? (_currentQuestionIndex + 1) / _questions.length : 0.0,
                       backgroundColor: Colors.white.withOpacity(0.3),
                       valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
@@ -554,7 +634,7 @@ class _InterviewPageState extends State<InterviewPage>
                       Expanded(
                         child: Center(
                           child: Text(
-                            currentQuestion,
+                            currentQuestion.isNotEmpty ? currentQuestion : 'Loading question...',
                             style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
